@@ -15,6 +15,8 @@ public class Handler {
     string endpoint = "https://api.segeln.social/v1";
     string projectId = Environment.GetEnvironmentVariable("APPWRITE_FUNCTION_PROJECT_ID");
 
+    string result = "false";
+
     Client client = new Client();
         
 
@@ -98,9 +100,14 @@ public class Handler {
         var storage = new Storage(client);
         var file = await storage.GetFile("pub", fileId);
 
+        if (current > DateTime.Parse(file.UpdatedAt))
+        { 
+            result = "true";
+        }
+
             return new Dictionary<string, object>()
                     {
-                        { "update", file.UpdatedAt }
+                        { "update", result }
                     };
     }
 }    
