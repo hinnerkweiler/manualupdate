@@ -15,6 +15,7 @@ public class Handler {
     string endpoint = "https://api.segeln.social/v1";
     string projectId = Environment.GetEnvironmentVariable("APPWRITE_FUNCTION_PROJECT_ID");
 
+    string resultKey = "update";
     string result = "false";
 
     Client client = new Client();
@@ -81,34 +82,40 @@ public class Handler {
                     current = DateTime.Parse(data["current"].ToString());
                 }
                 catch (Exception e) {
-                    throw new Exception("Invalid date format");
+                    resultKey = "error";
+                    result = "Invalid date format - " + e.Message;
                 }
             }
             else {
-                throw new Exception("Missing date");
+                resultKey = "error";
+                result = "Date missing ";
             }
             fileId = data["file"].ToString();
         }
         else {
-            throw new Exception("Invalid file");
+            resultKey = "error";
+            result = "Invalid file ";
         }
 
         if (fileId == "") {
-            throw new Exception("File was empty");
+            resultKey = "error";
+            result = "File missing ";
         }
 
-        var storage = new Storage(client);
-        var file = await storage.GetFile("pub", fileId);
+        if (resultKey == "update") {
+            var storage = new Storage(client);
+            var file = await storage.GetFile("pub", fileId);
 
-        if (current < DateTime.Parse(file.UpdatedAt))
-        { 
-            result = "true";
+            if (current < DateTime.Parse(file.UpdatedAt))
+            { 
+                result = "true";
+            }
         }
 
-            return new Dictionary<string, object>()
-                    {
-                        { "update", result }
-                    };
+        return new Dictionary<string, object>()
+                {
+                    { resultKey , result }
+                };
     }
 }    
 
