@@ -71,7 +71,9 @@ public class Handler {
         // Parse the body into a dictionary
         var data = JsonSerializer.Deserialize<Dictionary<string, object>>(body);
 
-        if (data.ContainsKey("file") && (data["file"] is string)) {
+        Context.Log(data);
+
+        if (data.ContainsKey("file")) {
             if (data.ContainsKey("current")) {
                 try {
                     current = DateTime.Parse(data["current"].ToString());
@@ -90,7 +92,7 @@ public class Handler {
         }
 
         if (fileId == "") {
-            throw new Exception("Invalid file");
+            throw new Exception("File was empty");
         }
 
         var storage = new Storage(client);
