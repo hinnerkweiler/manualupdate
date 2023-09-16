@@ -93,37 +93,14 @@ public class Handler {
             throw new Exception("Invalid file");
         }
 
-        if (await ServerFileIsNewer(fileId, current))
-        {
-            return new Dictionary<string, object>()
-                    {
-                        { "update", GetFileUrl(fileId) }
-                    };
-        }
-        else {
-            return new Dictionary<string, object>()
-                    {
-                        { "url", "no" },
-                    };
-        }
-    }
-
-    private async Task<bool> ServerFileIsNewer(string fileId, DateTime current) {
-
         var storage = new Storage(client);
         var file = await storage.GetFile("pub", fileId);
 
-        if (DateTime.Parse(file.UpdatedAt) > current) {
-            return true;
-        }        
-            return false;
+            return new Dictionary<string, object>()
+                    {
+                        { "update", file.UpdatedAt }
+                    };
     }
-
-    private string GetFileUrl(string fileId) {
-
-        return "https://api.segeln.socieal/v1/storage/buckets/pub/files/" + fileId + "/download";
-    }
-
 }    
 
         
