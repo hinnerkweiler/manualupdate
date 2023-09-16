@@ -12,7 +12,7 @@ using System.Xml.Schema;
 public class Handler {
 
     string apikey = Environment.GetEnvironmentVariable("APPWRITE_KEY");
-    string endpoint = Environment.GetEnvironmentVariable("APPWRITE_ENDPOINT");
+    string endpoint = "https://api.segeln.social/v1";
     string projectId = Environment.GetEnvironmentVariable("APPWRITE_FUNCTION_PROJECT_ID");
 
     Client client = new Client();
