@@ -7,13 +7,31 @@ using Appwrite.Extensions;
 using Newtonsoft.Json.Linq;
 using System.Text.Json;
 using System.Collections;
+using System.Xml.Schema;
 
 public class Handler {
+
+    string apikey = Environment.GetEnvironmentVariable("APPWRITE_KEY");
+    string endpoint = "https://api.segeln.social/v1";
+    string projectId = Environment.GetEnvironmentVariable("APPWRITE_FUNCTION_PROJECT_ID");
+
+    string resultKey = "update";
+    string result = "false";
+
+    Client client = new Client();
+        
 
     // This is your Appwrite function
     // It is executed each time we get a request
     public async Task<RuntimeOutput> Main(RuntimeContext Context) 
     {
+        //initialize the client
+        client
+            .SetEndpoint(endpoint)
+            .SetProject(projectId)
+            .SetKey(apikey)
+        ;
+
         // You can log messages to the console
         // if environment variable LOG_REQUESTS is set to true logs the request details
         if (Environment.GetEnvironmentVariable("LOG_REQUESTS") == "true") {
@@ -44,10 +62,61 @@ public class Handler {
     }
     private async Task<Dictionary<string, object?>> Post(DotNetRuntime.RuntimeContext Context)
     {
+        var body = JsonSerializer.Serialize<object>(Context.Req.Body);
+        string fileId = ""; 
+        DateTime current = DateTime.UtcNow;
+
+        // Validate that body holds a json object
+        if (!body.StartsWith("{")) {
+            throw new Exception("Invalid JSON object");
+        }
+
+        // Parse the body into a dictionary
+        var data = JsonSerializer.Deserialize<Dictionary<string, object>>(body);
+
+        Context.Log(data);
+
+        if (data.ContainsKey("file")) {
+            if (data.ContainsKey("current")) {
+                try {
+                    current = DateTime.Parse(data["current"].ToString());
+                }
+                catch (Exception e) {
+                    resultKey = "error";
+                    result = "Invalid date format - " + e.Message;
+                }
+            }
+            else {
+                resultKey = "error";
+                result = "Date missing ";
+            }
+            fileId = data["file"].ToString();
+        }
+        else {
+            resultKey = "error";
+            result = "Invalid file ";
+        }
+
+        if (fileId == "") {
+            resultKey = "error";
+            result = "File missing ";
+        }
+
+        if (resultKey == "update") {
+            var storage = new Storage(client);
+            var file = await storage.GetFile("pub", fileId);
+
+            if (current < DateTime.Parse(file.UpdatedAt))
+            { 
+                result = "true";
+            }
+        }
+
         return new Dictionary<string, object>()
-                    {
-                        { "message", "This is not the endpoint you were looking for!" },
-                        { "timestamp", DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff zzz") }
-                    };
+                {
+                    { resultKey , result }
+                };
     }
-}
+}    
+
+        

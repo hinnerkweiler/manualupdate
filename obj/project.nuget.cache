@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "hufZCZuCNRXicMt2Gix3CqmWZOQZOccOpMjDoyqbhWa2nJgy54OhJC21Mub535tgZebtoVWQiPkte2YHzUBvcQ==",
+  "dgSpecHash": "yvwRjnSMUL2yWuYycyTnOXQyjoB7l8bjewtxw5nNhxgEgPbov01eLXZ/J1QUe1FBX3i3f8gIJDh0Ei9S8cVTHQ==",
   "success": true,
-  "projectFilePath": "/Users/hinnerk/code/appwrite-function-template/function.csproj",
+  "projectFilePath": "/Users/hinnerk/code/manualupdate/function.csproj",
   "expectedPackageFiles": [
     "/Users/hinnerk/.nuget/packages/appwrite/0.6.0/appwrite.0.6.0.nupkg.sha512",
     "/Users/hinnerk/.nuget/packages/microsoft.netcore.platforms/1.1.1/microsoft.netcore.platforms.1.1.1.nupkg.sha512",
