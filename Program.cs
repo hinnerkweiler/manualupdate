@@ -100,7 +100,7 @@ public class Handler {
         var storage = new Storage(client);
         var file = await storage.GetFile("pub", fileId);
 
-        if (current > DateTime.Parse(file.UpdatedAt))
+        if (current < DateTime.Parse(file.UpdatedAt))
         { 
             result = "true";
         }
